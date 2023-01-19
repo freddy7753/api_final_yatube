@@ -1,15 +1,12 @@
 import base64
 
-from django.contrib.auth import get_user_model
 from django.core.files.base import ContentFile
 
 from rest_framework import serializers
 from rest_framework.relations import SlugRelatedField
 from rest_framework.validators import UniqueTogetherValidator
 
-from posts.models import Comment, Post, Group, Follow
-
-User = get_user_model()
+from posts.models import Comment, Post, Group, Follow, User
 
 
 class Base64ImageField(serializers.ImageField):
@@ -65,14 +62,14 @@ class FollowSerializer(serializers.ModelSerializer):
         fields = '__all__'
         model = Follow
         validators = [
+
             UniqueTogetherValidator(
                 queryset=Follow.objects.all(),
                 fields=['user', 'following']
             )
         ]
 
-    def validate(self, data):
-        request = self.context.get('request')
-        if request.user == data['following']:
+    def validate_following(self, value):
+        if value == self.context.get('request').user:
             raise serializers.ValidationError()
-        return data
+        return value
