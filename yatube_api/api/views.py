@@ -30,9 +30,11 @@ class GroupViewSet(viewsets.ReadOnlyModelViewSet):
     permission_classes = (AllowAny,)
 
 
-class FollowListCreateViewSet(mixins.ListModelMixin,
-                              mixins.CreateModelMixin,
-                              GenericViewSet):
+class FollowListCreateViewSet(
+    mixins.ListModelMixin,
+    mixins.CreateModelMixin,
+    GenericViewSet
+):
     serializer_class = FollowSerializer
     filter_backends = (filters.SearchFilter,)
     search_fields = ('=following__username',)
